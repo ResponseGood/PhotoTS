@@ -5,5 +5,5 @@
   <li>TypeScript</li>
   <li>Express</li>
   <li>JWT</li>
-  <li>mongoDB</li>
+  <li>MongoDB</li>
 </ul>
