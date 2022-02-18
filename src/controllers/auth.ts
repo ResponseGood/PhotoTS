@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {UserSchema} from "../models/User";
+import {UserSchema} from "../models/schemes";
 import mongoose from "mongoose";
 import {Md5} from 'ts-md5/dist/md5';
 
