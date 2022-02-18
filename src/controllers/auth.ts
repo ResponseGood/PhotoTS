@@ -13,7 +13,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-    //res.sendFile('index.html', { root: "../views" });
    res.json({'msg':'login'});
 };
+
+export const load_photos = async (req: Request, res: Response): Promise<void> => {
+    res.json({'msg':'load_photos'});
+    //1 - check auth
+    //2 - validate body params
+    //3 - load photos
+ };
 

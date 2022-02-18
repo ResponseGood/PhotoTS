@@ -15,6 +15,7 @@ export const PhotosShema = new Schema({
     title: { type:String, required: true },
     url: { type:String, required: true },
     thumbnailUrl: {type:String, required: true},
+    owner:{ type: mongoose.Types.ObjectId, required: true}
 });
 
 export const AlbumsSchema = new Schema ({

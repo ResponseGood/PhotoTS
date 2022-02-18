@@ -5,3 +5,4 @@ export const auth = Router();
 
 auth.post("/register", controller.register);
 auth.post("/login", controller.login);
+auth.post("/load-photos", controller.load_photos);
