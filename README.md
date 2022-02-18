@@ -1,4 +1,4 @@
-h3>PhotoTS</h2>
+<h3>PhotoTS</h3>
 <p>Technology stack</p>
 <ul>
   <li>Node.js</li>
