@@ -1,9 +1,10 @@
 import express from "express";
 import * as path from "path";
 
-import { auth } from "./routes/index";
+import { authRouter } from "./routes/authRoute";
+import { photosRouter } from "./routes/photos";
 import mongoose from 'mongoose';
-import DB_URL from "./config";
+import { DB_URL }  from "./config";
 export const app = express();
 
 const port = 3000;
@@ -16,7 +17,8 @@ app.use(express.json());
 
 
 app.use(express.static(path.join(__dirname, "../public")));
-app.use("/", auth);
+app.use("/", authRouter);
+app.use("/", photosRouter);
 server.on("error", onError);
 
 function onListening() {
@@ -44,11 +46,9 @@ function onError(error: NodeJS.ErrnoException) {
         case "EACCES":
             console.error(`${bind} requires elevated privileges`);
             process.exit(1);
-            break;
         case "EADDRINUSE":
             console.error(`${bind} is already in use`);
             process.exit(1);
-            break;
         default:
             throw error;
     }
