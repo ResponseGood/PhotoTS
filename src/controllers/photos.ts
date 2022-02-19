@@ -146,7 +146,7 @@ export const delete_album = async (req: Request, res: Response): Promise<void> =
     if (albumID) {
         try {
             const data = jwt.verify(token, JWT_PRIVATE_TOKEN);
-            const Photos = mongoose.model('photos', UserSchema);
+            const Photos = mongoose.model('photos', PhotosSchema);
             const Users = mongoose.model('users', UserSchema);
             const Albums = mongoose.model('albums', AlbumsSchema);
             await Users.findOne({_id: data['data']}).then((auth_data) => {
@@ -173,3 +173,30 @@ export const delete_album = async (req: Request, res: Response): Promise<void> =
     }
 
 };
+
+
+export const get_photos = async (req: Request, res: Response): Promise<void> => {
+    const ownerID:mongoose.Types.ObjectId = req.body["ownerid"];
+    const page: number = req.body["page"];
+    const maxCount: number = req.body["maxcount"];
+    if (ownerID && maxCount >= 10) {
+        const Photos = mongoose.model('photos', PhotosSchema);
+        const Query = { 
+            __v: false,
+            _id: false
+        };
+        await Photos.findOne({owner: ownerID},Query).then((photoData) => {
+            res.json(photoData);
+        })
+    } else if (!ownerID && maxCount >= 10) {
+        const Query = { 
+            __v: false,
+            _id: false
+        };
+        const Photos = mongoose.model('photos', PhotosSchema);
+        await  Photos.find({},Query).then(function (users) {
+            res.json(users);
+        });
+
+    }
+}
