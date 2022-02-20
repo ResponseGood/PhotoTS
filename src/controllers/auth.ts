@@ -25,11 +25,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 })
             })
         } else {
-            res.sendStatus(422).json("Specify a valid email");
+            res.sendStatus(422);
 
         }
     } else {
-        res.sendStatus(400).json("One of the required arguments is missing, login,email,password");
+        res.sendStatus(400);
     }
 };
 
@@ -73,15 +73,19 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             __v: false,
         };
         Users.findOne({login: loginData},Query).then((data) => {
-            if (loginData === data["login"]) {
-                bcrypt.compare(passwordData, data['password'], function(err, result) {
-                    if (result) {
-                        const token = jwt.sign({data:data["_id"]}, JWT_PRIVATE_TOKEN);
-                        res.cookie("JWT", token, {httpOnly:true}).json({"message":"Success!"});
-                    } else {
-                        res.status(422).json({"response":"Bad auth!"});
-                    }
-                })
+            if (data) {
+                if (loginData === data["login"]) {
+                    bcrypt.compare(passwordData, data['password'], function(err, result) {
+                        if (result) {
+                            const token = jwt.sign({data:data["_id"]}, JWT_PRIVATE_TOKEN);
+                            res.cookie("JWT", token, {httpOnly:true}).json({"message":"Success!"});
+                        } else {
+                            res.status(422).json({"response":"Bad auth!"});
+                        }
+                    })
+                }
+            }else {
+                res.status(422).json({"response":"Bad auth!"});
             }
         })
     }

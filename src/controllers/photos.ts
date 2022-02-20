@@ -33,7 +33,7 @@ export const load_photos = async (req: Request, res: Response): Promise<void> =>
                                 Photos.count(function (err, count) {
                                     Photos.create({
                                         photo_id:String(count + 1),
-                                        albumId:String(data.length),
+                                        albumId:data.length,
                                         title:titlePhoto,
                                         url:urlPhoto,
                                         thumbnailUrl:thumbnailUrl,
