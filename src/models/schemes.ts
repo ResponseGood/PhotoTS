@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
@@ -33,7 +32,7 @@ export const UserSchema = new Schema<User>({
 
 
 export const PhotosSchema = new Schema<Photo>({
-    photo_id: { type: String, required: true },
+    photo_id: { type: Number, required: true },
     albumId: { type: Number, ref: 'album',required: true},
     title: { type:String, required: true },
     url: { type:String, required: true },

@@ -28,36 +28,21 @@ export const load_photos = async (req: Request, res: Response): Promise<void> =>
             await Users.findOne({_id: data['data']},Query).then((auth_data) => {
                 if (auth_data) {
                     Album.find({}, function (err:string, data:any) {
-                        if (data.length > 0) {
-                            Album.create({_id:data.length,title: "default_title", owner:auth_data["_id"]})
-                            .then((result:string) => {
-                                if (result) {
+                        Album.create({_id:data.length + 1,title: "default_title", owner:auth_data["_id"]})
+                        .then((result:string) => {
+                            if (result) {
+                                Photos.count(function (err, count) {
                                     Photos.create({
-                                        photo_id:uuidv4(),
+                                        photo_id:count + 1,
                                         albumId:data.length,
                                         title:titlePhoto,
                                         url:urlPhoto,
                                         thumbnailUrl:thumbnailUrl,
                                         owner:auth_data["_id"]
                                     }).then(() => res.sendStatus(200))
-                                }
-                            })
-                        } else {
-                            Album.create({_id:0,title: "default_title", owner:auth_data["_id"]})
-                            .then((result:string) => {
-                                if (result) {
-                                    Photos.create({
-                                        photo_id:uuidv4(),
-                                        albumId:data.length,
-                                        title:titlePhoto,
-                                        url:urlPhoto,
-                                        thumbnailUrl:thumbnailUrl,
-                                        owner:auth_data["_id"]
-                                    }).then(() => res.sendStatus(200))
-
-                                }
-                            })
-                        }
+                                })
+                            }
+                        })
                     })
                 } else {
                     res.sendStatus(403).json({"msg":"Authorization is required to call this method"});
@@ -179,24 +164,52 @@ export const get_photos = async (req: Request, res: Response): Promise<void> => 
     const ownerID:mongoose.Types.ObjectId = req.body["ownerid"];
     const page: number = req.body["page"];
     const maxCount: number = req.body["maxcount"];
-    if (ownerID && maxCount >= 10) {
+    if (ownerID && maxCount >= 10 && page) {
         const Photos = mongoose.model('photos', PhotosSchema);
+        const photosCount = await Photos.count({});
+        if (photosCount < maxCount) {
+            res.sendStatus(400);
+        } else {
+            const Query = { 
+                __v: false,
+                _id: false
+            };
+            const offset = (page: number,itemsPerPage: number): number => {return (page - 1) * itemsPerPage + 1};
+            await Photos.find({owner: ownerID},Query).limit(maxCount).skip(offset(page,10) - 1).then((photoData) => {
+                res.json(photoData);
+            })
+
+        }
+    } else if (!ownerID && maxCount >= 10 && !page) {
         const Query = { 
             __v: false,
             _id: false
         };
-        await Photos.findOne({owner: ownerID},Query).then((photoData) => {
-            res.json(photoData);
-        })
-    } else if (!ownerID && maxCount >= 10) {
-        const Query = { 
-            __v: false,
-            _id: false
-        };
         const Photos = mongoose.model('photos', PhotosSchema);
-        await  Photos.find({},Query).then(function (users) {
-            res.json(users);
-        });
+        if (maxCount) {
+            const offset = (page: number,itemsPerPage: number): number => {return (page - 1) * itemsPerPage + 1};
+            await  Photos.find({},Query).limit(maxCount).skip(offset(page,10) - 1).then(function (photoData) {
+                res.json(photoData);
+            });
+        }
+
+    } else if (maxCount >= 10 && page) {
+        const Photos = mongoose.model('photos', PhotosSchema);
+        const photosCount = await Photos.count({});
+        if (photosCount < maxCount) {
+            res.sendStatus(400);
+        } else {
+            const Query = { 
+                __v: false,
+                _id: false
+            };
+            if (maxCount && page) {
+                const offset = (page: number,itemsPerPage: number): number => {return (page - 1) * itemsPerPage + 1};
+                await Photos.find({},Query).limit(maxCount).skip(offset(page,10) - 1).then((photoData) => {
+                    res.json(photoData);
+                })
+            }
+        }
 
     }
 }
