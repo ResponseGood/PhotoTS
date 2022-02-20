@@ -33,8 +33,8 @@ export const load_photos = async (req: Request, res: Response): Promise<void> =>
                             if (result) {
                                 Photos.count(function (err, count) {
                                     Photos.create({
-                                        photo_id:count + 1,
-                                        albumId:data.length,
+                                        photo_id:String(count + 1),
+                                        albumId:String(data.length),
                                         title:titlePhoto,
                                         url:urlPhoto,
                                         thumbnailUrl:thumbnailUrl,
@@ -104,16 +104,29 @@ export const delete_photo = async (req: Request, res: Response): Promise<void> =
             const data = jwt.verify(token, JWT_PRIVATE_TOKEN);
             const Photos = mongoose.model('photos', UserSchema);
             const Users = mongoose.model('users', UserSchema);
-            await Users.findOne({_id: data['data']}).then((auth_data) => {
-                if (auth_data) {
-                    Photos.deleteOne({photo_id: photoID })
-                    .then((result) => {
-                        if (result) {
-                            res.sendStatus(204);
+            if (photoID.split(",").length > 1) {
+                    await Users.findOne({_id: data['data']}).then((auth_data) => {
+                        if (auth_data) {
+                                Photos.deleteMany({ photo_id: { $in: photoID.split(",")}}, function(err) {
+                                    if (!err) {
+                                        res.sendStatus(200);
+                                    }
+                                })
                         }
                     })
-                }
-            })
+
+            } else {
+                await Users.findOne({_id: data['data']}).then((auth_data) => {
+                    if (auth_data) {
+                        Photos.deleteOne({photo_id: photoID})
+                        .then((result)=>{
+                            if (result) {
+                                res.sendStatus(200);
+                            }
+                        })
+                    }
+                })
+            }
         } catch (e) {
             console.log(e);
             res.sendStatus(403);
@@ -127,7 +140,7 @@ export const delete_album = async (req: Request, res: Response): Promise<void> =
     if (!token) {
         res.sendStatus(403);
     }
-    const albumID: number = req.body["albumid"];
+    const albumID: string = req.body["albumid"];
     if (albumID) {
         try {
             const data = jwt.verify(token, JWT_PRIVATE_TOKEN);
@@ -136,18 +149,32 @@ export const delete_album = async (req: Request, res: Response): Promise<void> =
             const Albums = mongoose.model('albums', AlbumsSchema);
             await Users.findOne({_id: data['data']}).then((auth_data) => {
                 if (auth_data) {
-                    Photos.deleteMany({albumId: albumID})
-                    .then((result) => {
-                        if (result) {
-                            Albums.deleteOne({ _id: albumID })
-                            .then((result) => {
-                                if (result) {
-                                    res.sendStatus(200);
-                                }
-                            })
+                    if (albumID.split(",").length > 1) {
+                        Photos.deleteMany({ albumId: { $in: albumID.split(",")}}, function(err) {
+                            if (!err) {
+                                Albums.deleteMany({ _id: { $in: albumID.split(",")}}, function(err) {
+                                    if (!err) {
+                                        res.sendStatus(200);
+                                    }
 
-                        }
-                    })
+                                })
+                            }
+
+                        })
+                    } else {
+                        Photos.deleteMany({albumId: albumID})
+                        .then((result) => {
+                            if (result) {
+                                Albums.deleteOne({ _id: albumID })
+                                .then((result) => {
+                                    if (result) {
+                                        res.sendStatus(200);
+                                    }
+                                })
+
+                            }
+                        })
+                    }
                 }
             })
 

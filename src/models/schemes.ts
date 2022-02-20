@@ -10,7 +10,8 @@ interface User {
 }
 
 interface Photo {
-    albumId:number,
+    photo_id: string
+    albumId:string,
     title:string,
     url:string,
     thumbnailUrl:string,
@@ -32,7 +33,7 @@ export const UserSchema = new Schema<User>({
 
 
 export const PhotosSchema = new Schema<Photo>({
-    photo_id: { type: Number, required: true },
+    photo_id: { type: String, required: true },
     albumId: { type: Number, ref: 'album',required: true},
     title: { type:String, required: true },
     url: { type:String, required: true },
@@ -41,7 +42,7 @@ export const PhotosSchema = new Schema<Photo>({
 });
 
 export const AlbumsSchema = new Schema<Album>({
-    _id: { type:Number, required: true },
+    _id: { type:String, required: true },
     title: { type:String, required: true },
     owner: { type: mongoose.Types.ObjectId, required: true}
 });
