@@ -7,3 +7,11 @@
   <li>JWT</li>
   <li>MongoDB</li>
 </ul>
+
+<h2>Start project local</h2>
+
+```
+tsc -b
+
+node app.js
+```
