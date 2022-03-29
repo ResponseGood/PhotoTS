@@ -11,7 +11,7 @@ Technology stack
 ```
 Auth
 /register - user registration,method POST
-/login - login and password authorization,method POST
+/login - login & password authorization,method POST
 
 Photos
 /load-photos - uploading photos,method POST
