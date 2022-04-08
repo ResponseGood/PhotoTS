@@ -21,7 +21,7 @@ Photos
 /get-photos - getting all photos with pagination,method GET
 ```
 
-<h2>Start project local</h2>
+## Start project local
 
 ```
 tsc -b
