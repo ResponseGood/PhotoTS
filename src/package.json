@@ -51,7 +51,7 @@
     "@types/node": "^12.20.46",
     "awesome-typescript-loader": "^5.2.0",
     "mocha": "^5.2.0",
-    "ts-node": "^10.5.0",
+    "ts-node": "^10.9.1",
     "tslib": "^2.3.1",
     "tslint": "^5.12.1",
     "typescript": "^3.1.6",
@@ -63,6 +63,6 @@
     "test": "tsc --project './tsconfig.json' && ./node_modules/.bin/mocha dist/**/*.spec.js",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/**.ts'"
   },
-  "author": "Faiz A. Farooqui <faiz@geekyants.com>",
+  "author": "SoulNaturalist",
   "license": "ISC"
 }
