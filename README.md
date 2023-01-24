@@ -4,6 +4,7 @@ Technology stack
 - Express
 - JWT
 - MongoDB
+- Docker
 
 
 ## Api endpoints
