@@ -1,9 +1,7 @@
 FROM node:18-alpine
-WORKDIR /src/
-COPY . package.json
-RUN npm install
-RUN npm install typescript
-COPY . .
+WORKDIR /usr/app
+COPY ./ .
+RUN npm install && npm install typescript --save-dev
 RUN npx tsc -b
-CMD ["node", "app.js"]
+CMD [ "node","app.js" ]
 EXPOSE 3000
