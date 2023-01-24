@@ -21,10 +21,9 @@ Photos
 /get-photos - getting all photos with pagination,method GET
 ```
 
-## Start project local
+## Deploying the application locally using docker
 
-```
-tsc -b
-
-node app.js
+```Dockerfile
+docker build -t photots .
+docker run photots
 ```
